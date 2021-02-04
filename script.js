@@ -6,7 +6,12 @@ const score = game.querySelector("h1");
 const birdHoriontalSpeed = 15;
 const birdFallingSpeed = 5;
 const birdVerticalSpeed = 30;
+
 let currentScore = 0;
+let obstacleGeneratorTimer;
+let obstacleMoveTimer;
+let birdFallTimer;
+let scoreTimer;
 
 function generateObstacle() {
     let holder = document.createElement("div");
@@ -67,6 +72,15 @@ function isCollide(a, b) {
     );
 }
 
+function buildRestartButton() {
+    let btn = document.createElement("button");
+    btn.innerText = "Restart";
+
+    document.body.appendChild(btn);
+
+    btn.addEventListener("click", start);
+}
+
 function death() {
     clearInterval(obstacleGeneratorTimer);
     clearInterval(obstacleMoveTimer);
@@ -77,6 +91,8 @@ function death() {
     document.body.removeEventListener("contextmenu", birdDrop);
 
     score.innerText = "You lose!";
+
+    buildRestartButton();
 }
 
 function findBirdTop() {
@@ -117,12 +133,23 @@ function checkScore() {
     score.innerText = `${currentScore} points`;
 }
 
-let obstacleGeneratorTimer = setInterval(generateObstacle, 3000);
-let obstacleMoveTimer = setInterval(moveObstacle, 200);
-let birdFallTimer = setInterval(birdFall, 200);
-let scoreTimer = setInterval(checkScore, 200);
+function start() {
+    [...document.querySelectorAll(".obstacle_holder, button")].forEach((e) =>
+        e.parentElement.removeChild(e)
+    );
 
-document.body.addEventListener("click", birdFlap);
-document.body.addEventListener("contextmenu", birdDrop);
+    obstacleGeneratorTimer = setInterval(generateObstacle, 3000);
+    obstacleMoveTimer = setInterval(moveObstacle, 200);
+    birdFallTimer = setInterval(birdFall, 200);
+    scoreTimer = setInterval(checkScore, 200);
 
-birdFall();
+    document.body.addEventListener("click", birdFlap);
+    document.body.addEventListener("contextmenu", birdDrop);
+
+    currentScore = 0;
+    bird.style.top = "0px";
+
+    birdFall();
+}
+
+start();

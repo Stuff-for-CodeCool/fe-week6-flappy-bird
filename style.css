@@ -76,3 +76,9 @@ h2 + h2 {
 .obstacle + .obstacle {
     bottom: 0;
 }
+
+button {
+    position: relative;
+    font-size: 2em;
+    border-radius: 5px;
+}
