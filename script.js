@@ -13,36 +13,31 @@ let obstacleMoveTimer;
 let birdFallTimer;
 let scoreTimer;
 
-function generateObstacle() {
-    let holder = document.createElement("div");
-    holder.classList.add("obstacle_holder");
+function createObstaclePart(parentElement, className) {
+    let obstacle = document.createElement("div");
+    obstacle.classList.add(className);
+    parentElement.appendChild(obstacle);
+    return obstacle;
+}
 
-    for (let i = 0; i < 2; i++) {
-        let obstacle = document.createElement("div");
-        obstacle.classList.add("obstacle");
-        holder.appendChild(obstacle);
-    }
+function generateObstacle() {
+    let holder = createObstaclePart(game, "obstacle_holder");
 
     let top = Math.floor(Math.random() * 300) - 15;
     holder.style.top = `-${top}px`;
 
-    game.appendChild(holder);
+    //  ADD 2 OBSTACLES HERE
+
     return holder;
 }
 
 function moveObstacle() {
     let obstacles = document.querySelectorAll(".obstacle_holder");
-    [...obstacles].forEach((o) => {
-        let l = parseInt(o.style.left, 10);
-        l = isNaN(l) ? 500 : l;
 
-        l -= birdHoriontalSpeed;
-        o.style.left = `${l}px`;
+    //  LOOP THROUGH OBSTACLES
+    //  MOVE OBSTACLES
+    //  REMOVE OBSTACLE IF LEFT OFFSET < -60
 
-        if (l < -60) {
-            game.removeChild(o);
-        }
-    });
     checkBirdCollision();
 }
 
@@ -52,7 +47,18 @@ function checkBirdCollision() {
 
     [...obstacles].forEach((o) => {
         let oBox = o.getBoundingClientRect();
-        if (isCollide(birdBox, oBox)) {
+        if (
+            isCollide(
+                birdBox.x,
+                birdBox.y,
+                birdBox.width,
+                birdBox.height,
+                oBox.x,
+                oBox.y,
+                oBox.width,
+                oBox.height
+            )
+        ) {
             death();
         }
     });
@@ -62,14 +68,17 @@ function checkBirdCollision() {
     }
 }
 
-function isCollide(a, b) {
-    //  https://stackoverflow.com/a/7301852
-    return !(
-        a.y + a.height < b.y ||
-        a.y > b.y + b.height ||
-        a.x + a.width < b.x ||
-        a.x > b.x + b.width
-    );
+function isCollide(
+    birdX,
+    birdY,
+    birdWidth,
+    birdHeight,
+    obstacleX,
+    obstacleY,
+    obstacleWidth,
+    obstacleHeight
+) {
+    //  IMPLEMENT
 }
 
 function buildRestartButton() {
@@ -116,16 +125,12 @@ function birdFall() {
 
 function birdFlap(event) {
     event.preventDefault();
-    let top = findBirdTop();
-    top = Math.max(0, top - birdVerticalSpeed);
-    bird.style.top = `${top}px`;
+    //  MOVE bird UP BY birdVerticalSpeed
 }
 
 function birdDrop(event) {
     event.preventDefault();
-    let top = findBirdTop();
-    top = Math.max(0, top + birdVerticalSpeed / 1.5);
-    bird.style.top = `${top}px`;
+    //  MOVE bird DOWN BY birdVerticalSpeed
 }
 
 function checkScore() {
@@ -134,7 +139,7 @@ function checkScore() {
 }
 
 function start() {
-    [...document.querySelectorAll(".obstacle_holder, button")].forEach((e) =>
+    [...document.querySelectorAll(".obstacle_holder")].forEach((e) =>
         e.parentElement.removeChild(e)
     );
 
