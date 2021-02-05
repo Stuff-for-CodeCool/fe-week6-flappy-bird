@@ -27,6 +27,7 @@ function generateObstacle() {
     holder.style.top = `-${top}px`;
 
     //  ADD 2 OBSTACLES HERE
+    //  USE createObstaclePart(holder, "obstacle")
 
     return holder;
 }
